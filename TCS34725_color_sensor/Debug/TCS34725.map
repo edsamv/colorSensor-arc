@@ -3291,17 +3291,17 @@ LOAD C:/ST/STM32CubeIDE_1.18.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_macro   0x00014e0a      0x217 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
  .debug_macro   0x00015021      0x1ed ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
 
-.debug_line     0x00000000     0x90a4
- .debug_line    0x00000000      0xda7 ./Core/Src/main.o
- .debug_line    0x00000da7      0x784 ./Core/Src/stm32f4xx_hal_msp.o
- .debug_line    0x0000152b      0x7e5 ./Core/Src/stm32f4xx_it.o
- .debug_line    0x00001d10      0x7ac ./Core/Src/system_stm32f4xx.o
- .debug_line    0x000024bc       0x7a ./Core/Startup/startup_stm32f401rctx.o
- .debug_line    0x00002536      0xa28 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_line    0x00002f5e      0xcf8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_line    0x00003c56      0xb44 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_line    0x0000479a     0x3ad5 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
- .debug_line    0x0000826f      0xe35 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+.debug_line     0x00000000     0x90a6
+ .debug_line    0x00000000      0xda9 ./Core/Src/main.o
+ .debug_line    0x00000da9      0x784 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_line    0x0000152d      0x7e5 ./Core/Src/stm32f4xx_it.o
+ .debug_line    0x00001d12      0x7ac ./Core/Src/system_stm32f4xx.o
+ .debug_line    0x000024be       0x7a ./Core/Startup/startup_stm32f401rctx.o
+ .debug_line    0x00002538      0xa28 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_line    0x00002f60      0xcf8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_line    0x00003c58      0xb44 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_line    0x0000479c     0x3ad5 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
+ .debug_line    0x00008271      0xe35 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
 
 .debug_str      0x00000000    0x84efd
  .debug_str     0x00000000    0x84efd ./Core/Src/main.o
