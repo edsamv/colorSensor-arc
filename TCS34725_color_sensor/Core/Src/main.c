@@ -107,6 +107,7 @@ void leds_off();
 void show_color(int color);
 void blink_success();
 void blink_error();
+void wait_all_buttons_release();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -158,70 +159,100 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-      int b0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0);
-      int b1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1);
-      int b3 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2);
+    /* USER CODE END WHILE */
+	  int b0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0);
+	  int b1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1);
+	  int b3 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2);
 
-      // 🔹 CALIBRATION
-      if (b0 && b1 && b3) {
-          HAL_Delay(2000);
+	  // CALIBRATION
+	  if (b0 && b1 && b3) {
+	      HAL_Delay(2000);
 
-          if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0) &&
-              HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1) &&
-              HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2)) {
+	      if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0) &&
+	          HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1) &&
+	          HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2)) {
 
-              run_calibration();
-              blink_success();
-              leds_off();
-          }
-      }
+	          run_calibration();
+	          blink_success();
+	          leds_off();
 
-      // 🔹 STORE
-      else if (b0) {
+	          wait_all_buttons_release();
+	      }
+	  }
 
-          int color = get_color_id();
-          show_color(color);
-          HAL_Delay(300);
+	  // STORE
+	  else if (b0) {
 
-          if (color == COLOR_BLACK) {
-              // ignore
-          }
-          else if (color != COLOR_NONE && index_ptr < MAX_COLORS) {
-              colorArray[index_ptr++] = color;
-              blink_success();
-          }
-          else {
-              blink_error();
-          }
+	      HAL_Delay(50);  // debounce
 
-          while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0));
-      }
+	      if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0)) {
 
-      // 🔹 UNDO
-      else if (b1) {
+	          if (index_ptr >= MAX_COLORS) {
+	              blink_error();
+	              leds_off();
+	              wait_all_buttons_release();
+	              continue;
+	          }
 
-          if (index_ptr > 0) {
-              index_ptr--;
-              blink_success();
-          } else {
-              blink_error();
-          }
+	          int color = get_color_id();
+	          show_color(color);
+	          HAL_Delay(300);
 
-          while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1));
-      }
+	          if (color == COLOR_BLACK) {
+	              // ignore
+	          }
+	          else if (color != COLOR_NONE) {
+	              colorArray[index_ptr++] = color;
+	              blink_success();
+	          }
+	          else {
+	              blink_error();
+	          }
 
-      // 🔹 RESET
-      else if (b3) {
+	          wait_all_buttons_release();
+	      }
+	  }
 
-          index_ptr = 0;
-          blink_success();
+	  // UNDO
+	  else if (b1) {
 
-          leds_off();
+	      HAL_Delay(50);  // debounce
 
-          while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2));
-      }
+	      if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1)) {
 
-      HAL_Delay(50);
+	          if (index_ptr > 0) {
+	              index_ptr--;
+
+	              blink_success();   // blink
+	              leds_off();        // then turn off
+
+	          } else {
+	              blink_error();
+	              leds_off();
+	          }
+
+	          wait_all_buttons_release();
+	      }
+	  }
+
+	  // RESET
+	  else if (b3) {
+
+	      HAL_Delay(50);  // debounce
+
+	      if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2)) {
+
+	          index_ptr = 0;
+
+	          blink_success();
+	          leds_off();
+
+	          wait_all_buttons_release();
+	      }
+	  }
+
+	  HAL_Delay(50);
+    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
@@ -327,7 +358,7 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pins : PB0 PB1 PB2 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB8 PB9 */
@@ -343,6 +374,15 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void wait_all_buttons_release() {
+    while (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0) ||
+           HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1) ||
+           HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2)) {
+        HAL_Delay(10);
+    }
+}
+
 void leds_off() {
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_RESET);
 }
@@ -364,11 +404,16 @@ void show_color(int color) {
             break;
 
         case COLOR_BLUE:
-            for(int i=0;i<2;i++){
-                HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8 | GPIO_PIN_9);
-                HAL_Delay(100);
-                HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8 | GPIO_PIN_9);
-                HAL_Delay(100);
+            for(int i=0;i<3;i++){
+                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+                HAL_Delay(200);
+
+                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
+                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+                HAL_Delay(200);
+
+                leds_off();
             }
             break;
 

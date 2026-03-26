@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := stm32_color_sensor
+BUILD_ARTIFACT_NAME := TCS34725
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-stm32_color_sensor.elf \
+TCS34725.elf \
 
 MAP_FILES += \
-stm32_color_sensor.map \
+TCS34725.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-stm32_color_sensor.list \
+TCS34725.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: stm32_color_sensor.elf secondary-outputs
+main-build: TCS34725.elf secondary-outputs
 
 # Tool invocations
-stm32_color_sensor.elf stm32_color_sensor.map: $(OBJS) $(USER_OBJS) C:\Users\edsam\OneDrive\Documents\stm32_color_sensor\stm32_color_sensor\STM32F401RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "stm32_color_sensor.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\edsam\OneDrive\Documents\stm32_color_sensor\stm32_color_sensor\STM32F401RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32_color_sensor.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+TCS34725.elf TCS34725.map: $(OBJS) $(USER_OBJS) C:\Users\edsam\OneDrive\Documents\ARC_UM_Color_Sensor\TCS34725_color_sensor\STM32F401RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "TCS34725.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\edsam\OneDrive\Documents\ARC_UM_Color_Sensor\TCS34725_color_sensor\STM32F401RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TCS34725.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-stm32_color_sensor.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "stm32_color_sensor.list"
+TCS34725.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "TCS34725.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) default.size.stdout stm32_color_sensor.elf stm32_color_sensor.list stm32_color_sensor.map
+	-$(RM) TCS34725.elf TCS34725.list TCS34725.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
