@@ -4,7 +4,7 @@ This module handles real-time color detection using the **TCS34725** sensor, man
 
 ---
 
-## 🛠 Main Functionalities
+## Main Functionalities
 
 ### 1. Calibration Mode
 To normalize readings and reduce the impact of ambient lighting, the system includes a manual calibration routine.
@@ -41,7 +41,7 @@ The system uses a Red and Green LED pair to communicate detection results and sy
 
 ---
 
-## 📂 Interfacing & Table Matching
+## Interfacing & Table Matching
 
 The logic is designed to interface with an external `generated_layouts.h` file.
 * **The Table:** `g_layouts[576]` contains every valid permutation of the 8 resources (24 possibilities per slot).
@@ -49,7 +49,7 @@ The logic is designed to interface with an external `generated_layouts.h` file.
 
 ---
 
-## 🔧 Hardware Configuration
+## Hardware Configuration
 * **Sensor:** TCS34725 (I2C)
 * **Main Trigger:** PB0 (Store)
 * **Alt Trigger:** PB1 (Undo/Reset)
