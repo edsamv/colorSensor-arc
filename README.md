@@ -1,6 +1,6 @@
-# ARC 2026 - Color Sensor & Layout Identification System
+#Color Sensor & Layout Identification System
 
-This module handles real-time color detection using the **TCS34725** sensor, manages a sequence of 8 resource scans, and identifies the corresponding mission layout from a pre-defined table of 576 possibilities.
+This module handles real-time color detection using the **TCS34725** sensor, manages a sequence of 8 resource scans, and identifies the corresponding layout from a pre-defined table of 576 possibilities.
 
 ---
 
