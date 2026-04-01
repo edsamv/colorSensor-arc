@@ -1,6 +1,7 @@
 # Color Sensor & Layout Identification System
 
 This module handles real-time color detection using the **TCS34725** sensor, manages a sequence of 8 resource scans, and identifies the corresponding layout from a pre-defined table of 576 possibilities.
+(Refer to the TCS34725_changes folder for the updated code)
 
 ---
 
