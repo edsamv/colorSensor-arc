@@ -1,4 +1,4 @@
-## Color Sensor & Layout Identification System
+# Color Sensor & Layout Identification System
 
 This module handles real-time color detection using the **TCS34725** sensor, manages a sequence of 8 resource scans, and identifies the corresponding layout from a pre-defined table of 576 possibilities.
 
@@ -8,49 +8,54 @@ This module handles real-time color detection using the **TCS34725** sensor, man
 
 ### 1. Calibration Mode
 To normalize readings and reduce the impact of ambient lighting, the system includes a manual calibration routine.
-* **Action:** Press **both buttons (PB0 + PB1)** simultaneously for approximately **2 seconds**.
-* **Process:** The system captures raw data to compute RGB multipliers ($rmult$, $gmult$, $bmult$).
-* **Feedback:** Both LEDs will turn on once the calibration is complete and multipliers are applied.
+* **Action:** Press **both buttons (PC8 + PC9)** simultaneously for approximately **2 seconds**.
+* **Process:** The system captures raw data to compute RGB multipliers ($r_{mult}$, $g_{mult}$, $b_{mult}$).
+* **Feedback:** All LEDs turn on once calibration is complete and multipliers are applied.
 
-### 2. Color Detection & Storage (PB0)
+### 2. Color Detection & Storage (PC8)
 The system tracks a sequence of 8 colors (4 branches, 2 slots each) starting at `index_ptr = 0`.
-* **Action:** Press **PB0** to scan a color.
-* **Logic:** * Captures RGBC data and applies the normalization multipliers.
+* **Action:** Press **PC8** to scan a color.
+* **Logic:** * Captures RGBC data and applies normalization multipliers.
     * Uses **Euclidean distance** ($2\Delta R^2 + 4\Delta G^2 + 3\Delta B^2$) against predefined reference values.
+    * **Empty Scan Protection:** If the "Clear" channel is below threshold (no object present), the system ignores the press and flashes an error.
     * Stores the result in `colorArray` and increments the index.
-* **Note:** Reference values (`refRed`, `refGreen`, etc.) should be updated with physical resource colors.
 
-### 3. Undo Controls (PB1)
+### 3. Undo Controls (PC9)
 Manual overrides to ensure the scanned sequence is 100% accurate.
-* **Undo:** Press **PB1** once to decrement the `index_ptr` by 1, allowing you to overwrite the last scanned color.
+* **Action:** Press **PC9** once to decrement the `index_ptr` by 1, allowing you to overwrite the last scanned color.
+
+---
+
+## Mode Selection (The Toggle Switch)
+
+The system state is governed by a physical **Toggle Switch** (connected to **PB0**, **PC2**, or **PC3**). This acts as a master gate between the collection phase and final execution.
+
+* **Collection Mode (Switch OFF):** System is in "Listening Mode." Store (PC8) and Undo (PC9) buttons are active to populate the `colorArray[8]`.
+* **Game Mode (Switch ON):** System "locks" the data and initiates the matching sequence against `g_layouts[576]`.
+    * **Success:** A **Layout ID** is identified, and **all LEDs** light up.
+    * **Failure:** If the array is incomplete or no match is found, the **Red LED** lights up as an error signal.
 
 ---
 
 ## LED Feedback Logic
 
-The system uses a Red and Green LED pair to communicate detection results and system status:
-
 | Status / Color | LED Behavior |
 | :--- | :--- |
-| **Red Detected** | Red LED (PB8) flashes |
-| **Green Detected** | Green LED (PB9) flashes |
-| **Blue Detected** | LEDs **alternate** flashing, then turn OFF |
-| **Yellow Detected** | Both LEDs flash, then stay **ON** |
-| **Success** | Short simultaneous blink |
+| **Red Detected** | Blinks **Success**, then lights Red LED (PB12) |
+| **Green Detected** | Blinks **Success**, then lights Green LED (PC5) |
+| **Yellow Detected** | Blinks **Success**, then lights Yellow LED (PA12) |
+| **Blue Detected** | Blinks **Success**, then lights all 3 LEDs |
+| **Success** | Short simultaneous blink (All LEDs) |
 | **Error / Full** | Rapid simultaneous toggle (3 times) |
 
 ---
 
-## Interfacing & Table Matching
-
-The logic is designed to interface with an external `generated_layouts.h` file.
-* **The Table:** `g_layouts[576]` contains every valid permutation of the 8 resources (24 possibilities per slot).
-* **The Matcher:** Once 8 colors are stored, the system runs a search algorithm to find the exact index in the table. This **Layout ID** is the final output used by the robot for pathing.
-
----
-
 ## Hardware Configuration
+
 * **Sensor:** TCS34725 (I2C)
-* **Main Trigger:** PB0 (Store)
-* **Alt Trigger:** PB1 (Undo/Reset)
-* **Indicators:** PB8 (Red LED), PB9 (Green LED)
+* **Toggle Switch:** PB0, PC2, or PC3 (Final pin TBD)
+* **Main Trigger:** PC8 (Store)
+* **Alt Trigger:** PC9 (Undo)
+* **Indicators:** PB12 (Red LED), PC5 (Green LED), PA12 (Yellow LED)
+
+> **Note:** Ensure internal Pull-Down resistors are enabled for all input pins (PC8, PC9, and Toggle) to prevent ghost triggers from EMI.
